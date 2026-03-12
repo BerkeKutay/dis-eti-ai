@@ -50,7 +50,7 @@ Bu sistem iki ana bileşenden oluşmaktadır:
 ### 1) Repoyu klonla
 
 ```bash
-git clone https://github.com/BerkeKutay/dis-eti-ai.git
+git clone https://github.com/Kutay0/dis-eti-ai.git
 cd dis-eti-ai
 ```
 
@@ -79,7 +79,7 @@ pip install -r requirements.txt
 
 ## 📦 Model Dosyalarını İndir
 
-Model ağırlıkları **Hugging Face**'de barındırılmaktadır: [🤗 BerkeKutay/dis-eti-ai](https://huggingface.co/BerkeKutay/dis-eti-ai)
+Model ağırlıkları **Hugging Face**'de barındırılmaktadır: [🤗 Kutay0/dis-eti-ai](https://huggingface.co/Kutay0/dis-eti-ai)
 
 ### Otomatik İndirme (Önerilir)
 
@@ -100,7 +100,7 @@ os.makedirs("dental_llm_project/trained_model", exist_ok=True)
 
 print("YOLO modeli indiriliyor...")
 hf_hub_download(
-    repo_id="BerkeKutay/dis-eti-ai",
+    repo_id="Kutay0/dis-eti-ai",
     filename="yolo/best.pt",
     local_dir=".",
     repo_type="model"
@@ -108,7 +108,7 @@ hf_hub_download(
 
 print("LLM modeli indiriliyor...")
 hf_hub_download(
-    repo_id="BerkeKutay/dis-eti-ai",
+    repo_id="Kutay0/dis-eti-ai",
     filename="llm/dental_model.pt",
     local_dir=".",
     repo_type="model"
@@ -119,7 +119,7 @@ print("✅ Modeller indirildi!")
 
 ### Manuel İndirme
 
-[Hugging Face model sayfasına](https://huggingface.co/BerkeKutay/dis-eti-ai) git, dosyaları indir ve şu konumlara yerleştir:
+[Hugging Face model sayfasına](https://huggingface.co/Kutay0/dis-eti-ai) git, dosyaları indir ve şu konumlara yerleştir:
 
 ```
 dis-eti-ai/
@@ -266,4 +266,4 @@ Herhangi bir diş sağlığı problemi için mutlaka bir diş hekimine başvurun
 
 ## 📬 İletişim
 
-Sorularınız için [GitHub Issues](https://github.com/BerkeKutay/dis-eti-ai/issues) kullanabilirsiniz.
+Sorularınız için [GitHub Issues](https://github.com/Kutay0/dis-eti-ai/issues) kullanabilirsiniz.
