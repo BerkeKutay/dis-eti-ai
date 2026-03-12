@@ -26,3 +26,4 @@ __pycache__/
 
 # Log dosyalari
 *.log
+.DS_Store
