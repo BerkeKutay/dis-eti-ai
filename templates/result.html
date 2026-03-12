@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analiz Sonucu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: 40px auto;
+            background: white;
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            margin-bottom: 25px;
+        }
+
+        .image-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .image-box {
+            text-align: center;
+        }
+
+        .image-box h4 {
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .image-box img {
+            width: 100%;
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .risk-box {
+            padding: 14px 20px;
+            border-radius: 12px;
+            display: inline-block;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .risk-low    { background: #16a34a; }
+        .risk-medium { background: #f59e0b; }
+        .risk-high   { background: #ef4444; }
+
+        .general-box {
+            background: #f9fafb;
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .card {
+            background: #f3f4f6;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 18px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .card h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+        }
+
+        .meta {
+            font-size: 14px;
+            margin-bottom: 12px;
+            color: #374151;
+        }
+
+        .degerlendirme {
+            font-size: 14px;
+            line-height: 1.7;
+            color: #1f2937;
+            margin-bottom: 12px;
+        }
+
+        .oneri-baslik {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .oneri-liste {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .oneri-liste li {
+            font-size: 13px;
+            color: #374151;
+            background: #fff;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            line-height: 1.5;
+        }
+
+        .oneri-liste li::before {
+            content: "→ ";
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 25px;
+            text-decoration: none;
+            color: #2563eb;
+        }
+
+        @media (max-width: 768px) {
+            .image-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Analiz Sonucu</h1>
+
+    <!-- GÖRSELLER -->
+    {% if boxed_image or gradcam_image %}
+    <div class="image-row">
+
+        {% if boxed_image %}
+        <div class="image-box">
+            <h4>Orijinal Görüntü (Tespit Alanları)</h4>
+            <img src="{{ url_for('static', filename='results/' ~ boxed_image) }}">
+        </div>
+        {% endif %}
+
+        {% if gradcam_image %}
+        <div class="image-box">
+            <h4>Aktivasyon Haritası (Grad-CAM)</h4>
+            <img src="{{ url_for('static', filename='results/' ~ gradcam_image) }}">
+        </div>
+        {% endif %}
+
+    </div>
+    {% endif %}
+
+    <!-- RISK SKORU -->
+    {% if risk_skoru is defined %}
+        {% set risk_class =
+            "risk-high"   if risk_skoru >= 80
+            else "risk-medium" if risk_skoru >= 50
+            else "risk-low" %}
+
+        <div class="risk-box {{ risk_class }}">
+            Risk Skoru: {{ risk_skoru }} / 100
+        </div>
+    {% endif %}
+
+    <!-- GENEL YORUM -->
+    {% if genel_yorum %}
+    <div class="general-box">
+        <strong>Genel Değerlendirme:</strong><br><br>
+        {{ genel_yorum }}
+    </div>
+    {% endif %}
+
+    <!-- SINIF KARTLARI -->
+    {% if results %}
+        {% for item in results %}
+            <div class="card">
+
+                <h3>{{ item.sinif_turkce }} - %{{ item.oran }}</h3>
+
+                <div class="meta">
+                    <strong>Risk:</strong> {{ item.risk }} &nbsp;|&nbsp;
+                    <strong>Konum:</strong> {{ item.konum }}
+                </div>
+
+                <!-- Değerlendirme -->
+                {% if item.yorum.degerlendirme %}
+                <div class="degerlendirme">
+                    {{ item.yorum.degerlendirme }}
+                </div>
+                {% endif %}
+
+                <!-- Öneriler -->
+                {% if item.yorum.oneriler %}
+                <div class="oneri-baslik">Öneriler</div>
+                <ul class="oneri-liste">
+                    {% for oneri in item.yorum.oneriler %}
+                        <li>{{ oneri }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <a href="/">← Yeni Analiz Yap</a>
+
+</div>
+
+</body>
+</html>

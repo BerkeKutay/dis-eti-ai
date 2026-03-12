@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Diş Eti Analiz Sistemi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            margin-top: 30px;
+        }
+
+        video, img {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 12px;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .guide-box {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .guide-box ul {
+            line-height: 1.8;
+        }
+
+        button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        button.secondary {
+            background: #6b7280;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        hr {
+            margin: 40px 0;
+            border: none;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>Diş Eti Analiz Sistemi</h1>
+
+{% if error_message %}
+    <div style="
+        background:#fee2e2;
+        color:#991b1b;
+        padding:15px;
+        border-radius:10px;
+        margin-bottom:20px;
+        font-weight:bold;
+        text-align:center;">
+        {{ error_message }}
+    </div>
+{% endif %}
+
+
+<!-- 🔥 FOTOĞRAF ÇEKİM REHBERİ -->
+<div class="guide-box">
+
+    <h2>Doğru Fotoğraf Nasıl Çekilmeli?</h2>
+
+    <p>
+        Analizin doğru yapılabilmesi için fotoğraf aşağıdaki örneğe benzer şekilde çekilmelidir:
+    </p>
+
+    <img src="{{ url_for('static', filename='ornek_dis_fotografi.jpg') }}">
+
+    <ul>
+        <li>Dişler tamamen açık olmalı</li>
+        <li>Diş etleri net ve ortalanmış görünmeli</li>
+        <li>Yüz değil, yalnızca ağız bölgesi kadrajda olmalı</li>
+        <li>Fotoğraf karşıdan ve düz açıyla çekilmeli</li>
+        <li>Yeterli ışık olmalı (karanlık ortamdan kaçının)</li>
+    </ul>
+
+</div>
+
+<h2>Kamera ile Fotoğraf Çek</h2>
+
+<video id="video" autoplay playsinline></video>
+
+<button type="button" id="captureBtn">Fotoğraf Çek</button>
+
+<canvas id="canvas" class="hidden"></canvas>
+<img id="preview" class="hidden">
+
+<!-- 🔥 TEK FORM -->
+<form id="cameraForm" method="POST">
+
+    <input type="hidden" name="captured_image" id="captured_image">
+
+    <div id="afterCapture" class="hidden">
+        <button type="submit">Analiz Et</button>
+        <button type="button" class="secondary" id="retakeBtn">Tekrar Çek</button>
+    </div>
+
+</form>
+
+<hr>
+
+<h2>Veya Dosya Yükle</h2>
+
+<form method="POST" enctype="multipart/form-data">
+    <input type="file" name="image">
+    <br><br>
+    <button type="submit">Analiz Et</button>
+</form>
+
+</div>
+
+<script>
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const preview = document.getElementById('preview');
+const captureBtn = document.getElementById('captureBtn');
+const retakeBtn = document.getElementById('retakeBtn');
+const afterCapture = document.getElementById('afterCapture');
+const capturedInput = document.getElementById('captured_image');
+
+// Kamera başlat
+async function startCamera() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: "user" }
+        });
+        video.srcObject = stream;
+    } catch (err) {
+        alert("Kamera açılamadı.");
+    }
+}
+startCamera();
+
+// 5 saniye geri sayım
+captureBtn.addEventListener("click", function() {
+
+    let count = 5;
+    captureBtn.disabled = true;
+    captureBtn.innerText = count;
+
+    const interval = setInterval(() => {
+        count--;
+        captureBtn.innerText = count;
+
+        if (count <= 0) {
+            clearInterval(interval);
+            captureBtn.innerText = "Fotoğraf Çek";
+            captureBtn.disabled = false;
+            takePhoto();
+        }
+    }, 1000);
+});
+
+function takePhoto() {
+
+    const context = canvas.getContext("2d");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    context.drawImage(video, 0, 0);
+
+    const dataURL = canvas.toDataURL("image/jpeg");
+
+    preview.src = dataURL;
+
+    video.classList.add("hidden");
+    captureBtn.classList.add("hidden");
+
+    preview.classList.remove("hidden");
+    afterCapture.classList.remove("hidden");
+
+    capturedInput.value = dataURL;
+}
+
+// Tekrar çek
+retakeBtn.addEventListener("click", function() {
+
+    preview.classList.add("hidden");
+    afterCapture.classList.add("hidden");
+
+    video.classList.remove("hidden");
+    captureBtn.classList.remove("hidden");
+
+    capturedInput.value = "";
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+path: Dataset
+
+train: training/images
+val: validation/images
+test: test/images
+
+nc: 7
+
+names:
+  0: saglam
+  1: hafif_gingivitis
+  2: ileri_gingivitis
+  3: periodontitis
+  4: plak
+  5: tartar
+  6: kanama

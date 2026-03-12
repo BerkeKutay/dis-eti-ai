@@ -1,0 +1,28 @@
+# Dataset - cok buyuk
+Dataset/
+Dataset_backup/
+
+# Model agirliklari
+*.pt
+runs/
+
+# LLM trained model ve dataset
+dental_llm_project/trained_model/
+dental_llm_project/dataset/
+
+# Runtime dosyalari
+static/results/*
+static/uploads/*
+static/gradcam/*
+!static/results/.gitkeep
+!static/uploads/.gitkeep
+!static/gradcam/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Log dosyalari
+*.log
