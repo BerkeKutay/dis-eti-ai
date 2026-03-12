@@ -6,6 +6,14 @@
 ![YOLOv8](https://img.shields.io/badge/YOLOv8-Ultralytics-red)
 ![Flask](https://img.shields.io/badge/Flask-Web%20App-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
+[![Hugging Face](https://img.shields.io/badge/🤗%20Hugging%20Face-Kutay0%2Fdis--eti--ai-orange)](https://huggingface.co/Kutay0/dis-eti-ai)
+[![Dataset](https://img.shields.io/badge/Dataset-Mendeley%20CC%20BY%204.0-lightblue)](https://data.mendeley.com/datasets/3253gj88rr/1)
+
+---
+
+## 🖼️ Uygulama Ekran Görüntüsü
+
+![Analiz Sonucu](screenshots/result.png)
 
 ---
 
@@ -79,47 +87,18 @@ pip install -r requirements.txt
 
 ## 📦 Model Dosyalarını İndir
 
-Model ağırlıkları **Hugging Face**'de barındırılmaktadır: [🤗 BerkeKutay/dis-eti-ai](https://huggingface.co/BerkeKutay/dis-eti-ai)
+Model ağırlıkları **Hugging Face**'de barındırılmaktadır: [![Hugging Face](https://img.shields.io/badge/🤗-Kutay0%2Fdis--eti--ai-orange)](https://huggingface.co/Kutay0/dis-eti-ai)
 
 ### Otomatik İndirme (Önerilir)
 
 ```bash
 pip install huggingface_hub
-
 python3 download_models.py
-```
-
-`download_models.py` içeriği:
-
-```python
-from huggingface_hub import hf_hub_download
-import os
-
-os.makedirs("runs/detect/dental_strong_m_v5/weights", exist_ok=True)
-os.makedirs("dental_llm_project/trained_model", exist_ok=True)
-
-print("YOLO modeli indiriliyor...")
-hf_hub_download(
-    repo_id="BerkeKutay/dis-eti-ai",
-    filename="yolo/best.pt",
-    local_dir=".",
-    repo_type="model"
-)
-
-print("LLM modeli indiriliyor...")
-hf_hub_download(
-    repo_id="BerkeKutay/dis-eti-ai",
-    filename="llm/dental_model.pt",
-    local_dir=".",
-    repo_type="model"
-)
-
-print("✅ Modeller indirildi!")
 ```
 
 ### Manuel İndirme
 
-[Hugging Face model sayfasına](https://huggingface.co/BerkeKutay/dis-eti-ai) git, dosyaları indir ve şu konumlara yerleştir:
+[Hugging Face model sayfasına](https://huggingface.co/Kutay0/dis-eti-ai) git, dosyaları indir ve şu konumlara yerleştir:
 
 ```
 dis-eti-ai/
@@ -136,6 +115,22 @@ python app.py
 ```
 
 Tarayıcıda aç: `http://127.0.0.1:5000`
+
+---
+
+## 💡 Örnek Kullanım
+
+1. Ana sayfada **"Fotoğraf Yükle"** butonuna tıkla
+2. Ağız içi diş fotoğrafı seç (`.jpg`, `.png`)
+3. **"Analiz Et"** butonuna bas
+4. Sistem otomatik olarak şunları üretir:
+   - Tespit edilen hastalık sınıfları ve güven skorları
+   - Her bölge için risk skoru (0–100)
+   - Grad-CAM aktivasyon haritası
+   - LLM tarafından üretilen klinik değerlendirme ve öneriler
+   - Genel periodontal risk skoru
+
+> **Not:** En iyi sonuç için iyi aydınlatılmış, net ağız içi fotoğraflar kullanın.
 
 ---
 
@@ -183,10 +178,10 @@ Dataset/
 
 **Sınıf ID'leri:**
 ```
-0: saglam          3: periodontitis
+0: saglam            3: periodontitis
 1: hafif_gingivitis  4: plak
 2: ileri_gingivitis  5: tartar
-                   6: kanama
+                     6: kanama
 ```
 
 ### YOLO Eğitimi
@@ -234,6 +229,9 @@ dis-eti-ai/
 ├── static/
 │   └── style.css
 │
+├── screenshots/
+│   └── result.png                  # Uygulama ekran görüntüsü
+│
 └── model_analiz_v5.ipynb           # Performans analizi notebook
 ```
 
@@ -272,6 +270,34 @@ LLM Klinik Yorum Üretimi
 Grad-CAM Aktivasyon Haritası
       ↓
 Web Arayüzü (Flask)
+```
+
+---
+
+## 📝 Atıf (Citation)
+
+Bu projeyi araştırmanızda kullanıyorsanız lütfen aşağıdaki şekilde atıf yapın:
+
+```bibtex
+@misc{diseti2026,
+  author       = {Berke Kutay},
+  title        = {Dental AI: YOLOv8 ve Custom Transformer ile Periodontal Hastalık Tespiti},
+  year         = {2026},
+  publisher    = {GitHub},
+  url          = {https://github.com/BerkeKutay/dis-eti-ai}
+}
+```
+
+Kullanılan dataset için:
+
+```bibtex
+@data{3253gj88rr,
+  author    = {Duy Hoang Bao},
+  title     = {A Dental Intraoral Image Dataset of Gingivitis for Image Captioning},
+  year      = {2024},
+  publisher = {Mendeley Data},
+  doi       = {10.17632/3253gj88rr.1}
+}
 ```
 
 ---
